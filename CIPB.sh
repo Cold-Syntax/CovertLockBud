@@ -23,31 +23,49 @@ main_menu()
 	echo "(E)asy	 |	 (M)edium	 |	 (H)ard"
 }
 
+set_lock()
+{
+	# Get the numbers of min pins
+	# See if difficulty is higher (Med to High) if so how many security pins
+	# randomly select which are security pins
+	# Easy 3-6 pins no security
+	# Medium 4-6, 1-2 security pins of the same type
+	# Hard 5-6, 3-6 security pins of randomized type and check to see if 5 pins 6 sec happens
+	# Add an options be challenge to a selected pick from both geno and eche a turning position (Bottom for rakes only)
+	# set_lock() min_pins min_sec max_sec random_sec
+	local min_pins=(((RANDOM % 6) + $1))
+	local min_sec=$2
+	local max_sec=$3
+	local random_sec=$4
+
+	
+}
+
 # This takes what we've selected from the main menu and carries it to the difficulty setter
 difficulty()
 {
-
-	local lvl=$1
-
-	if [[ "${lvl^^}" == "E" ]]; then
-		echo "Choosing difficulty mode: Easy"
-	elif [[ "${lvl^^}" == "M" ]]; then
-		echo "Choosing difficulty mode: Middle"
-	elif [[ "${lvl^^}" == "H" ]]; then
-		echo "Choosing difficulty mode: Hard"
-	else
-		echo "This is just plainly wrong"
-		menu_opt
-	fi
-
+	# Case statement to choose each setting
+	case $1 in
+		[Ee]* )
+			echo "Choosing difficulty mode: Easy"
+			set_lock 3 0 0 false;;
+		[Mm]* )
+			echo "Choosing difficulty mode: Middle"
+			set_lock 4 1 2 false;;
+		[Hh]* )
+			echo "Choosing difficulty mode: Hard"
+			set_lock 5 3 6 true;;
+		*)
+			echo "This is just plainly wrong"
+			menu_opt;;
+	esac
 }
 
 menu_opt()
 {
 	main_menu
-	read
-	local diff=$REPLY
-	difficulty $diff
+	read option
+	difficulty $option
 }
 
 banner
