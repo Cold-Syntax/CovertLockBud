@@ -25,12 +25,7 @@ main_menu()
 
 set_lock()
 {
-	# Get the numbers of min pins
-	# See if difficulty is higher (Med to High) if so how many security pins
-	# randomly select which are security pins
-	# Easy 3-6 pins no security
-	# Medium 4-6, 1-2 security pins of the same type
-	# Hard 5-6, 3-6 security pins of randomized type and check to see if 5 pins 6 sec happens
+	clear
 	# Add an options be challenge to a selected pick from both geno and eche a turning position (Bottom for rakes only)
 	# set_lock() min_pins security_count random_sec
 	case $1 in
@@ -61,16 +56,37 @@ set_lock()
 		num_of_sec=$(("$num_of_pins"))
 	fi
 
-	random_sec=$3
+	if [[ ! $3 ]]; then
+		security_choice=$(("$RANDOM"%2))
+	else
+		security_choice=2
+	fi
+
 
 	declare -a pins=()
+	declare -a security_pins=("Spool" "Serrated")
+	
 	for ((i=0; i < "$num_of_pins"; i++))
 	do
 		if [[ "$num_of_sec" -gt 0 && $(("$num_of_pins"-"$i")) -ge "$num_of_sec" ]]; then
 			if [[ $(("$RANDOM" % 2)) -eq 0 && $(("$num_of_pins"-"$i")) -gt "$num_of_sec" ]]; then
 				pins+=("Standard")
 			else
-				pins+=("Special")
+				case "$security_choice" in
+					0)
+						# Spool
+						pins+=(${security_pins[0]})
+						;;
+					1)
+						# Serrated
+						pins+=(${security_pins[1]})
+						;;
+					2)
+						# Random
+						pins+=(${security_pins[$(("$RANDOM"%2))]})
+						;;
+				esac
+				#pins+=("Special")
 				let num_of_sec--
 			fi
 		else
@@ -107,6 +123,34 @@ difficulty()
 	esac
 }
 
+pick_of_choice()
+{
+	read -p "Do you want to use a random pick too from covert instrument? (Y/N)" picks
+	case $picks in
+		[Yy]*)
+			read -p "1) Genesis | 2) Echelon | 3) Either" sets
+			case $sets in
+				1)
+					echo "Genesis"
+					;;
+				2)
+					echo "Echelon"
+					;;
+				3)
+					echo "Either One"
+					;;
+			esac
+			;;
+		[Nn]*)
+			echo "Very well, good luck!"
+			;;
+		*)
+			echo "Bruh"
+			pick_of_choice
+			;;
+		esac
+}
+
 menu_opt()
 {
 	main_menu
@@ -119,3 +163,5 @@ banner
 echo "$about"
 
 menu_opt
+
+pick_of_choice
