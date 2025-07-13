@@ -23,11 +23,10 @@ main_menu()
 	echo "(E)asy	 |	 (M)edium	 |	 (H)ard"
 }
 
+# set_lock() min_pins security_count random_sec
 set_lock()
 {
 	clear
-	# Add an options be challenge to a selected pick from both geno and eche a turning position (Bottom for rakes only)
-	# set_lock() min_pins security_count random_sec
 	case $1 in
 		3)
 			num_of_pins=$(("$RANDOM"%4+$1))
@@ -125,22 +124,51 @@ difficulty()
 
 pick_of_choice()
 {
-	read -p "Do you want to use a random pick too from covert instrument? (Y/N)" picks
+	# Select the right array or both if they have both
+	# If it's a rake, bottom of the keyway tension
+	declare -a genesis=("Short Hook (.025)" "Medium Hook (.025)" "Quad Wave Rake (.025)" "Quint Wave Rake (.025)")
+	declare -a echelon=("Short Hook (.020)" "Medium Hook (.025)" "Quad Wave Rake (.020)" "Quint Wave Rake (.020)" "Two Peak Rake (.025)" "Gentle Reach (.025)")
+	both=( "${genesis[@]}" "${echelon[@]}" )
+	declare -a keyway_tension=("Top of the Keyway Tension" "Bottom of the Keyway Tension")
+
+	read -p "Do you want to use a random pick too from covert instrument? (Y/N) " picks
 	case $picks in
 		[Yy]*)
-			read -p "1) Genesis | 2) Echelon | 3) Either" sets
+			read -p "1) Genesis | 2) Echelon | 3) Either " sets
 			case $sets in
 				1)
-					echo "Genesis"
+					#echo "Genesis"
+					choose_pick="${genesis["$RANDOM"%4]}"
+					if echo "$choose_pick" | grep -q "Rake" ; then
+						tension_position="${keyway_tension[1]}"
+					else
+						tension_position="${keyway_tension["$RANDOM"%2]}"
+					fi
+					echo "Use the $choose_pick with $tension_position."
 					;;
 				2)
-					echo "Echelon"
+					#echo "Echelon"
+                                        choose_pick="${echelon["$RANDOM"%6]}"
+                                        if echo "$choose_pick" | grep -q "Rake" ; then
+						tension_position="${keyway_tension[1]}"
+					else
+                                                tension_position="${keyway_tension["$RANDOM"%2]}"
+                                        fi
+                                        echo "Use the $choose_pick with $tension_position."
 					;;
 				3)
-					echo "Either One"
+					#echo "Either One"
+					choose_pick="${both["$RANDOM"%6]}"
+					if echo "$choose_pick" | grep -q "Rake" ; then
+						tension_position="${keyway_tension[1]}"
+					else
+						tension_position="${keyway_tension["$RANDOM"%2]}"
+					fi
+					echo "Use the $choose_pick with $tension_position."
 					;;
 			esac
 			;;
+
 		[Nn]*)
 			echo "Very well, good luck!"
 			;;
