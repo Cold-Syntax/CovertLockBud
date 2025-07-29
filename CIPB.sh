@@ -139,34 +139,22 @@ pick_of_choice()
 				1)
 					#echo "Genesis"
 					choose_pick="${genesis["$RANDOM"%4]}"
-					if echo "$choose_pick" | grep -q "Rake" ; then
-						tension_position="${keyway_tension[1]}"
-					else
-						tension_position="${keyway_tension["$RANDOM"%2]}"
-					fi
-					echo "Use the $choose_pick with $tension_position."
 					;;
 				2)
 					#echo "Echelon"
                                         choose_pick="${echelon["$RANDOM"%6]}"
-                                        if echo "$choose_pick" | grep -q "Rake" ; then
-						tension_position="${keyway_tension[1]}"
-					else
-                                                tension_position="${keyway_tension["$RANDOM"%2]}"
-                                        fi
-                                        echo "Use the $choose_pick with $tension_position."
 					;;
 				3)
 					#echo "Either One"
 					choose_pick="${both["$RANDOM"%6]}"
-					if echo "$choose_pick" | grep -q "Rake" ; then
-						tension_position="${keyway_tension[1]}"
-					else
-						tension_position="${keyway_tension["$RANDOM"%2]}"
-					fi
-					echo "Use the $choose_pick with $tension_position."
 					;;
 			esac
+			if echo "$choose_pick" | grep -q "Rake" ; then
+				tension_position="${keyway_tension[1]}"
+			else
+				tension_position="${keyway_tension["$RANDOM"%2]}"
+			fi
+			echo "Use the $choose_pick with $tension_position."
 			;;
 
 		[Nn]*)
